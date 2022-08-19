@@ -24,7 +24,7 @@ All available options listed below:
 1. Toggle recoil control | Press DEL
 2. Load primary pattern | Press 1
 3. Load secondary pattern | Press 2
-4. Kill program | Press /
+4. Kill program | Press F12
     """,
     "action-close-program": "ACTION: Program Closed",
     "helpers-scan-one": "Please input the values for the first scan box below: [Ex. - left,top,width,height]",
