@@ -12,6 +12,7 @@ import sys
 
 sct = mss()
 ocr_client = None
+ocr_api_status = {"general": True, "basicAccurate": True, "accurate": True, "webImage": True}
 
 try:
     data = read_config()
@@ -57,22 +58,44 @@ def weapon_screenshot(select_weapon):
 
 def read_weapon(png_image):
     # 调用通用文字识别（标准含位置信息版）
-    res_image = ocr_client.general(png_image)
-    if res_image.get("words_result") is None:
-        # 调用通用文字识别（高精度版）
+    if ocr_api_status["general"]:
+        res_image = ocr_client.general(png_image)
+        if res_image.get("words_result") is None:
+            ocr_api_status["general"] = False
+        else:
+            return res_image.get("words_result")[0].get("words")
+
+    # 调用通用文字识别（高精度版）
+    if ocr_api_status["basicAccurate"]:
         res_image = ocr_client.basicAccurate(png_image)
-    elif res_image.get("words_result") is None:
-        # 调用通用文字识别（高精度含位置版）
+        if res_image.get("words_result") is None:
+            ocr_api_status["basicAccurate"] = False
+        else:
+            return res_image.get("words_result")[0].get("words")
+
+    # 调用通用文字识别（高精度含位置版）
+    if ocr_api_status["accurate"]:
         res_image = ocr_client.accurate(png_image)
-    elif res_image.get("words_result") is None:
-        # 网络文字识别
+        if res_image.get("words_result") is None:
+            ocr_api_status["accurate"] = False
+        else:
+            return res_image.get("words_result")[0].get("words")
+
+    # 网络文字识别
+    if ocr_api_status["webImage"]:
         res_image = ocr_client.webImage(png_image)
-    elif res_image.get("words_result") is None:
-        # 通用文字识别
-        res_image = ocr_client.basicGeneral(png_image)
+        if res_image.get("words_result") is None:
+            ocr_api_status["webImage"] = False
+        else:
+            return res_image.get("words_result")[0].get("words")
+
+    # 通用文字识别
+    res_image = ocr_client.basicGeneral(png_image)
     if res_image.get("words_result") is not None:
+        return "None"
+    else:
         return res_image.get("words_result")[0].get("words")
-    return "None"
+
 
 def left_click_state():
     left_click = win32api.GetKeyState(0x01)
