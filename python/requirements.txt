@@ -19,3 +19,4 @@ PyTweening==1.0.3
 pywin32==301
 PyYAML==5.4.1
 six==1.16.0
+baidu-aip=4.16.7
