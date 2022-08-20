@@ -9,3 +9,6 @@ scan_coord_two:
   left: 1696
   top: 1030
   width: 129
+AppID: xxxx
+API_Key: xxxxxxx
+Secret_Key: xxxxxx

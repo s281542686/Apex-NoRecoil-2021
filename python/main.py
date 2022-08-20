@@ -11,14 +11,16 @@ import time
 import sys
 
 sct = mss()
-client = AipOcr("27013097", "qXXyEwhS68LzK5OdAYP3yoe5", "ag7vccpVKi9q2SIVoXms2bNea1aUhfLG")
+ocr_client = None
 
 try:
     data = read_config()
+    ocr_client = AipOcr(str(data["AppID"]), str(data["API_Key"]), str(data["Secret_Key"]))
 except FileNotFoundError:
     try:
         config_generator()
         data = read_config()
+        ocr_client = AipOcr(str(data["AppID"]), str(data["API_Key"]), str(data["Secret_Key"]))
     except KeyboardInterrupt:
         print_banner("single", "header-stop")
         print_banner("no-clear", "action-close-program")
@@ -55,19 +57,19 @@ def weapon_screenshot(select_weapon):
 
 def read_weapon(png_image):
     # 调用通用文字识别（标准含位置信息版）
-    res_image = client.general(png_image)
+    res_image = ocr_client.general(png_image)
     if res_image.get("words_result") is None:
         # 调用通用文字识别（高精度版）
-        res_image = client.basicAccurate(png_image)
+        res_image = ocr_client.basicAccurate(png_image)
     elif res_image.get("words_result") is None:
         # 调用通用文字识别（高精度含位置版）
-        res_image = client.accurate(png_image)
+        res_image = ocr_client.accurate(png_image)
     elif res_image.get("words_result") is None:
         # 网络文字识别
-        res_image = client.webImage(png_image)
+        res_image = ocr_client.webImage(png_image)
     elif res_image.get("words_result") is None:
         # 通用文字识别
-        res_image = client.basicGeneral(png_image)
+        res_image = ocr_client.basicGeneral(png_image)
     if res_image.get("words_result") is not None:
         return res_image.get("words_result")[0].get("words")
     return "None"
